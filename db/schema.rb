@@ -13,7 +13,7 @@
 ActiveRecord::Schema.define(version: 20200120100133) do
 
   create_table "answers", force: :cascade do |t|
-    t.text "statement", null: false
+    t.text "text", null: false
     t.integer "user_id"
     t.integer "question_id"
     t.datetime "created_at", null: false
@@ -23,19 +23,19 @@ ActiveRecord::Schema.define(version: 20200120100133) do
   end
 
   create_table "comments", force: :cascade do |t|
-    t.text "statement"
+    t.text "text"
     t.integer "user_id"
-    t.string "commented_on_type"
-    t.integer "commented_on_id"
+    t.string "commentable_type"
+    t.integer "commentable_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["commented_on_type", "commented_on_id"], name: "index_comments_on_commented_on_type_and_commented_on_id"
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "questions", force: :cascade do |t|
     t.string "title", null: false
-    t.text "explanation"
+    t.text "body"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -68,12 +68,12 @@ ActiveRecord::Schema.define(version: 20200120100133) do
   create_table "votes", force: :cascade do |t|
     t.boolean "has_liked"
     t.integer "user_id"
-    t.string "voted_object_type"
-    t.integer "voted_object_id"
+    t.string "votable_type"
+    t.integer "votable_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_votes_on_user_id"
-    t.index ["voted_object_type", "voted_object_id"], name: "index_votes_on_voted_object_type_and_voted_object_id"
+    t.index ["votable_type", "votable_id"], name: "index_votes_on_votable_type_and_votable_id"
   end
 
 end

@@ -15,17 +15,17 @@ class CommentTest < ActiveSupport::TestCase
   end
 
   test "statement should be present" do
-    @comment.statement = "   "
+    @comment.text = "   "
     assert_not @comment.valid?
   end
 
   test "commented_on_type should be present" do
-    @comment.commented_on_type = "   "
+    @comment.commentable_type = "   "
     assert_not @comment.valid?
   end
 
   test "commented_on_id should be present" do
-    @comment.commented_on_id = nil
+    @comment.commentable_id = nil
     assert_not @comment.valid?
   end
 

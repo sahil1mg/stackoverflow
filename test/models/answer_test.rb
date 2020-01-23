@@ -11,7 +11,7 @@ class AnswerTest < ActiveSupport::TestCase
   end
 
   test "statement should be present" do
-    @answer.statement = "   "
+    @answer.text = "   "
     assert_not @answer.valid?
   end
 

@@ -3,11 +3,11 @@
 one:
   has_liked: false
   user: one
-  voted_object: one
-  voted_object_type: Question
+  votable: one
+  votable_type: Question
 
 two:
   has_liked: false
   user: two
-  voted_object: one
-  voted_object_type: Comment
+  votable: one
+  votable_type: Comment

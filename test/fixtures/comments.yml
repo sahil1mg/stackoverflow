@@ -1,13 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  statement: MyText
+  text: MyText
   user: one
-  commented_on: one
-  commented_on_type: Question
+  commentable: one
+  commentable_type: Question
 
 two:
-  statement: MyText
+  text: MyText
   user: two
-  commented_on: two
-  commented_on_type: Comment
+  commentable: two
+  commentable_type: Comment

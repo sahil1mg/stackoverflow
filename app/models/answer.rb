@@ -2,8 +2,8 @@ class Answer < ApplicationRecord
   ##############*Associations*##############
   belongs_to :user
   belongs_to :question
-  has_many :votes, as: :voted_object
-  has_many :comments, as: :commented_on
+  has_many :votes, as: :votable
+  has_many :comments, as: :commentable
   ##############*Validation*################
-  validates :statement, presence:true
+  validates :text, presence:true
 end

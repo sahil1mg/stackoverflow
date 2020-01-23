@@ -2,10 +2,10 @@
 
 one:
   title: MyString
-  explanation: MyText
+  body: MyText
   user: one
 
 two:
   title: MyString
-  explanation: MyText
+  body: MyText
   user: two
