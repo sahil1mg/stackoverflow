@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200120100133) do
+ActiveRecord::Schema.define(version: 20200204111904) do
 
   create_table "answers", force: :cascade do |t|
     t.text "text", null: false
@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(version: 20200120100133) do
     t.string "label", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "body"
   end
 
   create_table "users", force: :cascade do |t|
@@ -63,6 +64,8 @@ ActiveRecord::Schema.define(version: 20200120100133) do
     t.boolean "is_admin"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["email_id", "deleted_at"], name: "index_users_on_email_id_and_deleted_at", unique: true
   end
 
   create_table "votes", force: :cascade do |t|

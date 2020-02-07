@@ -6,7 +6,7 @@ class Question < ApplicationRecord
   has_many :comments, as: :commentable
   has_and_belongs_to_many :tags
   ##############*Validation*################
-  validates :title, presence:true
+  validates :title, presence:true, uniqueness:{case_sensitive:false}
 
-  default_scope -> { order(created_at: :desc) }
+  default_scope -> { order(updated_at: :desc) }
 end
