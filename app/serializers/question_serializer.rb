@@ -1,5 +1,5 @@
 class QuestionSerializer < ActiveModel::Serializer
-  attributes :id, :title, :body, :votes, :updated_at, :no_of_answers, :user_name, :user_id
+  attributes :id, :title, :body, :votes, :updated_at, :user_name, :user_id
   belongs_to :user
   has_many :tags
   has_many :comments
@@ -7,11 +7,15 @@ class QuestionSerializer < ActiveModel::Serializer
 
 
   def votes
-    object.votes.count
-  end
-
-  def no_of_answers
-    object.answers.count
+    votes_count = 0
+    object.votes.each do |vote|
+      if(vote[:has_liked])
+        votes_count+=1
+      else
+        votes_count-=1
+      end
+    end
+    return votes_count
   end
 
   def user_name

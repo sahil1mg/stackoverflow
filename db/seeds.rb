@@ -13,7 +13,8 @@
   User.create!(name:  name,
                email_id: email,
                password:              password,
-               password_confirmation: password)
+               password_confirmation: password,
+               is_admin: false)
 end
 
 users = User.order(created_at: :desc).take(6)

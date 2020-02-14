@@ -1,14 +1,15 @@
 class UserController < ApplicationController
-  before_action :initialize_user_service, only: [:sign_up, :update_user]
-
+  before_action :initialize_user_service, only: [:create, :update]
+  skip_before_action :verify_authenticity_token
   #show all users
   def index
     render json: UserService.showAll, each_serializer: UserSerializer, includes: 'tags'
   end
 
   #create new user
-  def signup
-    @user_service.sign_up
+  def create
+    user = @user_service.sign_up
+    render json: user, status: :created
   end
 
   #get a particular user
@@ -17,24 +18,35 @@ class UserController < ApplicationController
   end
 
   #update details of user
-  def update_user
-    @user_service.update_user
+  def update
+    user = @user_service.update_user(params[:id])
+    render json: user, status: :ok
   end
 
   #delete a user
-  def destroy_user
-    UserService.destroy_user(params[:id])
+  def destroy
+    user = UserService.destroy_user(params[:id])
+    render json: user, status: :ok
+  end
+
+  def search
+    response = User.not_deleted.select(:id).where("name LIKE ?", "%#{params[:search]}%")
+    if(response.empty?)
+      render status: :not_found
+    else
+      render json: response.to_json, status: :found
+    end
   end
 
   private
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
-    params.require(:user).permit(:name, :email_id, :password, :password_confirmation)
+    params.permit("name", "email_id", "password", "password_confirmation","id")
   end
 
   #initialize user service
   def initialize_user_service
-    @user_service = UserService.new(user_params[:user])
+    @user_service = UserService.new(user_params)
   end
 end

@@ -13,8 +13,10 @@ module TagService
       tag = Tag.find(tag_id)
       if(tag)
         tag.label=@tag_params[:label]
+        tag.body = @tag_params[:body]
         tag.save!
       end
+      return tag
     end
 
     def self.destroy_tag(tag_id)
@@ -24,17 +26,17 @@ module TagService
   end
 
   class TagAdder
-    def add_tags(question_id, tag_ids)
+    def self.add_tags(question_id, tag_ids)
       question = QuestionService.get_question(question_id)
       tags = TagService.get_tags(tag_ids)
-      if(question)
+      if(question && tags)
         question.tags << tags
       else
         raise "Question not found"
       end
     end
 
-    def update_tags(question_id, tag_ids)
+    def self.update_tags(question_id, tag_ids)
       question = QuestionService.get_question(question_id)
       tags = TagService.get_tags(tag_ids)
       if(question)

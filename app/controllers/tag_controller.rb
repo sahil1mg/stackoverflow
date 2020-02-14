@@ -1,25 +1,21 @@
 class TagController < ApplicationController
-  before_action :initialize_tag_creator, only: [:create, :edit]
+  before_action :initialize_tag_creator, only: [:create, :update]
   before_action :initialize_tag_adder, only: [:add_tags]
+  skip_before_action :verify_authenticity_token
 
   def create
-    @tag_service.create_tags
+    tag = @tag_service.create_tags
+    render json: tag, status: :created
   end
 
-  def edit
-    @tag_service.edit_tags(params[:id])
+  def update
+    tag = @tag_service.edit_tags(params[:id])
+    render json: tag, status: :ok
   end
 
   def destroy
-    TagService::TagCreator.destroy_tag(params[:id])
-  end
-
-  def add_tags_to_question
-    @tag_adder.add_tags(question_id, tags)
-  end
-
-  def update_tags_to_question
-    @tag_adder.update_tags(question_id, tags)
+    tag = TagService::TagCreator.destroy_tag(params[:id])
+    render json: tag, status: :ok
   end
 
   def index
@@ -31,17 +27,30 @@ class TagController < ApplicationController
   end
 
   def get_questions_for_tag
-    render json: Tag.find(params[:id]).questions, each_serializer: QuestionSerializer, include: 'tags'
+    render json: Tag.includes(questions: [:tags, :votes, :user]).find(params[:id]).questions, each_serializer: QuestionSerializer, include: 'tags'
+  end
+
+  def get_question_count_for_tags
+    render json: Tag.joins(:questions).group(:tag_id).count
+  end
+
+  def search
+    response = Tag.select(:id).where("label LIKE ?", "%#{params[:search]}%")
+    if(response.empty?)
+      render status: :not_found
+    else
+      render json: response.to_json, status: :found
+    end
   end
 
   private
 
   def tag_params
-    params.require(:tag).permit( :label)
+    params.require("tag").permit( "label", "body", "id")
   end
 
   def initialize_tag_creator
-    @tag_service = TagService::TagCreator.new(tag_params[:tag])
+    @tag_service = TagService::TagCreator.new(tag_params)
   end
 
   def initialize_tag_adder

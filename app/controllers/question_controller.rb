@@ -4,7 +4,6 @@ class QuestionController < ApplicationController
 
   def index
     @questions = QuestionService.show_all
-        #Question.all.includes(:user, :tags)
     respond_to do |format|
       format.json {render json: @questions, each_serializer: QuestionSerializer, include: 'tags'}
       format.html {render json: @questions}
@@ -20,12 +19,14 @@ class QuestionController < ApplicationController
   #PATCH/PUT questions/1
   def update
     question = @question_service.update_question(params[:id])
+    TagService::TagAdder.update_tags(question[:id], params["tags"])
     render json: question, status: :ok
   end
 
   def create
     puts "Started Create"
     question = @question_service.ask_question
+    TagService::TagAdder.add_tags(question[:id], params["tags"])
     render json: question, status: :created
   end
 
@@ -35,14 +36,25 @@ class QuestionController < ApplicationController
 
   def answered_questions
     questions=[]
+    question_ids = []
     user= User.find(params[:id])
     if(user)
       user.answers.each do |answer|
-        questions.push(answer.question)
+        question_ids.push(answer.question_id)
       end
+      questions = Question.includes(:tags, :votes, :user).where(id: question_ids)
       render json: questions, include: 'tags'
     else
       raise 'User not found'
+    end
+  end
+
+  def search
+    response = Question.includes(:tags, :user, :votes).where("title LIKE ? or body LIKE ? ", "%#{params[:search]}%", "%#{params[:search]}%")
+    if(response.empty?)
+      render status: :not_found
+    else
+      render json: response , each_serializer: QuestionSerializer, include: 'tags', status: :found
     end
   end
 
@@ -56,6 +68,6 @@ class QuestionController < ApplicationController
   end
 
   def question_params
-    params.require("question").permit(:title,:body, :id)
+    params.require("question").permit(:title,:body, :id, :tags=>[])
   end
 end

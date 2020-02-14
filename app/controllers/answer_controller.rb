@@ -31,8 +31,11 @@ class AnswerController < ApplicationController
   end
 
   def show_by_question_id
-    answers = Answer.where(question_id: params[:id])
-    render json: answers, include: 'comments'
+    render json: Answer.includes(:comments, :votes, :user).where(question_id: params[:id]), include: 'comments'
+  end
+
+  def count
+    render json: Answer.select(:question_id).where(question_id: params["ids"]).group(:question_id).count
   end
 
   private

@@ -8,7 +8,7 @@ class User < ApplicationRecord
   validates :email_id, presence:true, format: { with: VALID_EMAIL_REGEX}, uniqueness:{case_sensitive:false, scope: :deleted_at}
   validates :password, presence:true, length: { minimum: 6 }, on: [:create, :update]
   validates :password_confirmation, presence:true, length: { minimum: 6 }, on: [:create, :update]
-
+  scope :not_deleted, -> { where("deleted_at is null") }
 ##############*Associations*##############
   has_many :questions
   has_many :answers

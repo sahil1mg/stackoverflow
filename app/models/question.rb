@@ -7,6 +7,6 @@ class Question < ApplicationRecord
   has_and_belongs_to_many :tags
   ##############*Validation*################
   validates :title, presence:true, uniqueness:{case_sensitive:false}
-
+  scope :not_deleted, -> { where("deleted_at is null") }
   default_scope -> { order(updated_at: :desc) }
 end

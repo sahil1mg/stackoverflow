@@ -1,26 +1,19 @@
 class SessionController < ApplicationController
-  before_action :initialize_session_service
+  skip_before_action :verify_authenticity_token
 
   #login
-  def create
-    if(@session_service.login?(session_params[:session][:email_id], session_params[:session][:password]))
-      redirect_to request.referrer || root_url
+  def authenticate
+    user = User.not_deleted.find_by(email_id: session_params[:email].downcase)
+    if user && user.authenticate(session_params[:password])
+      render json: user, status: :ok
+    else
+      render status: :unauthorized
     end
-  end
-
-  #logout using log_out from helper method
-  def destroy
-    @session_service.log_out
-    redirect_to root_url
   end
 
   private
 
   def session_params
-    params.permit(:session).require(:email_id, :password)
-  end
-
-  def initialize_session_service
-    @session_service = SessionService.new()
+    params.require("session").permit(:email, :password)
   end
 end
