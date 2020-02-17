@@ -6,4 +6,5 @@ class Answer < ApplicationRecord
   has_many :comments, as: :commentable
   ##############*Validation*################
   validates :text, presence:true
+  default_scope -> { where("deleted_at is null") }
 end

@@ -31,7 +31,8 @@ class QuestionController < ApplicationController
   end
 
   def destroy
-    @question_service.delete_question(params[:id])
+    question = QuestionService.delete_question(params["id"])
+    render json: question, status: :ok
   end
 
   def answered_questions
@@ -58,6 +59,14 @@ class QuestionController < ApplicationController
     end
   end
 
+  def restore
+    question = Question.find(params[:id])
+    if(question)
+      question.update_attribute(:deleted_at,nil)
+      render json: question.to_json, status: :ok
+    end
+  end
+
   private
 
   def initialize_question_service
@@ -68,6 +77,6 @@ class QuestionController < ApplicationController
   end
 
   def question_params
-    params.require("question").permit(:title,:body, :id, :tags=>[])
+    params.require("question").permit(:title,:body, :id, :user_id, :tags=>[])
   end
 end

@@ -25,6 +25,6 @@ class AnswerService
 
   def self.destroy_answer(answer_id)
     answer = Answer.find(answer_id)
-    answer.destroy!
+    answer.touch(:deleted_at)
   end
 end

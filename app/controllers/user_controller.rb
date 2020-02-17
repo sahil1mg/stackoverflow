@@ -3,7 +3,7 @@ class UserController < ApplicationController
   skip_before_action :verify_authenticity_token
   #show all users
   def index
-    render json: UserService.showAll, each_serializer: UserSerializer, includes: 'tags'
+    render json: UserService.showAll.to_json, status: :ok
   end
 
   #create new user
@@ -14,7 +14,7 @@ class UserController < ApplicationController
 
   #get a particular user
   def show
-    render json: UserService.get_user(params[:id]), includes: 'tags, questions, answers'
+    render json: UserService.get_user(params[:id]), includes: 'questions, answers'
   end
 
   #update details of user
@@ -38,11 +38,20 @@ class UserController < ApplicationController
     end
   end
 
+  def authenticate_cookie
+    user = User.find_by(id:params[:id])
+    if(user && user.authenticated?(params[:remember_token], user.remember))
+      render json: user.to_json, status: :ok
+    else
+      render status: :unauthorized
+    end
+  end
+
   private
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
-    params.permit("name", "email_id", "password", "password_confirmation","id")
+    params.permit("name", "email_id", "password", "password_confirmation","id","remember")
   end
 
   #initialize user service

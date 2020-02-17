@@ -16,6 +16,7 @@ class QuestionService
   end
 
   def self.delete_question(id)
+    puts "Deleting question #{id}"
     question = Question.find(id)
     question.touch(:deleted_at)
   end

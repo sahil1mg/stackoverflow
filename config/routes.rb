@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   root 'question#index'
 
   resources :question
-  resources :answer, only: [:create, :edit, :update, :show]
+  resources :answer
   resources :comment, only: [:create, :edit, :update, :show]
   resources :vote, only: [:create]
   resources :tag, only: [:index, :create, :update, :show, :destroy]
@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get '/answer/question/:id', to: 'answer#show_by_question_id'
 
   post 'session/authenticate', to: 'session#authenticate'
+  delete '/logout/:id', to: 'session#logout'
 
   post '/vote_data/', to: 'vote#vote_data'
   post '/answer_count/', to: 'answer#count'
@@ -21,5 +22,7 @@ Rails.application.routes.draw do
   post 'search_tag', to: 'tag#search'
   post 'search_user', to: 'user#search'
   post 'search_question', to: 'question#search'
-
+  post 'restore_question', to: 'question#restore'
+  post 'restore_answer', to: 'answer#restore'
+  post 'authenticate_cookie', to: 'user#authenticate_cookie'
 end

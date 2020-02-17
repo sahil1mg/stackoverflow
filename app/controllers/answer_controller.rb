@@ -5,6 +5,8 @@ class AnswerController < ApplicationController
   #create
   def create
     answer =@answer_service.submit_answer
+    user = User.not_deleted.find(answer_params["user_id"])
+    puts user.authenticated?("remember",params["remember"])
     render json: answer, status: :created
   end
 
@@ -21,7 +23,8 @@ class AnswerController < ApplicationController
 
   #destroy
   def destroy
-    AnswerService.destroy_answer(params[:id])
+    answer = AnswerService.destroy_answer(params[:id])
+    render json: answer.to_json, status: :ok
   end
 
   #show
@@ -38,10 +41,18 @@ class AnswerController < ApplicationController
     render json: Answer.select(:question_id).where(question_id: params["ids"]).group(:question_id).count
   end
 
+  def restore
+    answer = Answer.find(params[:id])
+    if(question)
+      answer.update_attribute(:deleted_at,nil)
+      render json: answer.to_json, status: :ok
+    end
+  end
+
   private
 
   def answer_params
-    params.require(:answer).permit(:text, :user_id, :question_id)
+    params.require(:answer).permit(:text, :user_id, :question_id, :remember)
   end
 
   def initialize_answer_service

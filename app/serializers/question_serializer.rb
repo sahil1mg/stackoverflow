@@ -1,5 +1,5 @@
 class QuestionSerializer < ActiveModel::Serializer
-  attributes :id, :title, :body, :votes, :updated_at, :user_name, :user_id
+  attributes :id, :title, :body, :votes, :updated_at, :user_name, :user_id, :deleted_at
   belongs_to :user
   has_many :tags
   has_many :comments
