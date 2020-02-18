@@ -42,8 +42,6 @@ group :development, :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
-  gem 'will_paginate',           '3.1.6'
-  gem 'bootstrap-will_paginate', '1.0.0'
 end
 
 group :development do
