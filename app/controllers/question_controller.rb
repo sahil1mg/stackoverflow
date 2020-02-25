@@ -51,7 +51,7 @@ class QuestionController < ApplicationController
   end
 
   def search
-    response = Question.includes(:tags, :user, :votes).where("title LIKE ? or body LIKE ? ", "%#{params[:search]}%", "%#{params[:search]}%")
+    response = Question.not_deleted.includes(:tags, :user, :votes).where("title LIKE ? or body LIKE ? ", "%#{params[:search]}%", "%#{params[:search]}%")
     if(response.empty?)
       render status: :not_found
     else
