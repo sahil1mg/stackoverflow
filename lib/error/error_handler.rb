@@ -3,7 +3,7 @@ module Error
     def self.included(clazz)
       clazz.class_eval do
         rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
-          rescue_from StandardError, with: :standard_error
+        rescue_from StandardError, with: :standard_error
       end
     end
 
